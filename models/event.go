@@ -2,6 +2,7 @@
 package models
 
 import (
+	"rest/db"
 	"time"
 )
 
@@ -17,8 +18,22 @@ type Event struct {
 // declares a global variable named 'events'
 var events = []Event{} //empty slice of 'event' type objects.slice is initialized but does not contain any elements initially.
 
-// save method i.e attached to this event struct that will save such an event to the database
-func (e Event) Save() {
+// defines a method Save() on the Event type-takes no arguments other than the receiver e
+func (e Event) Save() error {
+	query:=`
+	INSERT INTO events(name,description,location,dateTime,user_id) 
+	VALUES(?,?,?,?,?)`
+	stmt,err:=db.DB.Prepare(query)
+	if err!=nil{
+		return err
+	}
+	defer stmt.Close()
+	result,err:=stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UserID)
+	if err!=nil{
+		return err
+	}
+	id,err:=result.LastInsertId()
+	e.ID=id
 	events = append(events, e)
 }
 
