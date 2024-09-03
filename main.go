@@ -23,7 +23,11 @@ func main(){
 
 //handler func for /events route
 func getEvents(context *gin.Context){ //takes a context parameter of type '*gin.context',represents the context of the current HTTP request and response.
-	events:=models.GetAllEvents() //import the model package and use here
+	events,err:=models.GetAllEvents() //import the model package and use here
+	if err!=nil{
+		context.JSON(http.StatusInternalServerError,gin.H{"message":"Could not fetch events.Try again later"})
+		return 
+	}
 	context.JSON(http.StatusOK, events) 
 }
 
@@ -42,7 +46,12 @@ func createEvent(context *gin.Context){ //takes a context parameter,which provid
 	event.ID=1
 	event.UserID=1
 
-	event.Save()
+	err=event.Save()
+
+	if err!=nil{
+		context.JSON(http.StatusInternalServerError,gin.H{"message":"Could not create event.Try again later"})
+		return
+	}
 
 	//this sends a JSON response back to the client.
 	context.JSON(http.StatusCreated,gin.H{"message":"Event created!","event":event})
