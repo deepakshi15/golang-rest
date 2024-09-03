@@ -16,15 +16,14 @@ type Event struct {
 }
 
 // declares a global variable named 'events'
-var events = []Event{} //empty slice of 'event' type objects.slice is initialized but does not contain any elements initially.
+var events = []Event{} 
 
-// defines a method Save() on the Event type-takes no arguments other than the receiver e
 func (e Event) Save() error {
 	query:=`
 	INSERT INTO events(name,description,location,dateTime,user_id) 
 	VALUES(?,?,?,?,?)`
 
-	stmt,err:=db.DB.Prepare(query) //prepares a sql statement,alternatively,also directly execute a statement via Exec()
+	stmt,err:=db.DB.Prepare(query) 
 
 	if err!=nil{
 		return err
@@ -32,20 +31,18 @@ func (e Event) Save() error {
 
 	defer stmt.Close()
 
-	//execute the prepared statement
 	result,err:=stmt.Exec(e.Name,e.Description,e.Location,e.DateTime,e.UserID)
 	if err!=nil{
 		return err
 	}
 
-	id,err:=result.LastInsertId() //get the id of that event that was inserted
+	id,err:=result.LastInsertId() 
 	e.ID=id
     return err
 }
 
-// function named GetAllEvents that returns a slice of 'Event' objects
 func GetAllEvents() ([]Event,error) {
-	query:= "SELECT *FRom events"
+	query:= "SELECT *FROM events"
 	rows, err:= db.DB.Query(query)
 	if err!=nil{
 		return nil,err
@@ -57,7 +54,7 @@ func GetAllEvents() ([]Event,error) {
 
 	for rows.Next(){
 		var event Event
-		err:=rows.Scan(&event.ID,&event.Name,&event.Description,&event.Location,&event.DateTime) //pointer to id field in event struct
+		err:=rows.Scan(&event.ID,&event.Name,&event.Description,&event.Location,&event.DateTime,&event.UserID) 
 
 		if err!=nil{
 			return nil, err
