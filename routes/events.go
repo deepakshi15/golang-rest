@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"context"
 	"net/http" //deals with HTTP statuses and methods
 	"rest/models"
 	"strconv"
@@ -76,11 +75,11 @@ func updateEvent(context *gin.Context){
 		return 
 	}
 	updateEvent.ID=eventID
-	err=updateEvent.update()
+	err=updateEvent.Update()
 
 	if err!=nil{
-		context.JSON((http.StatusInternalServerError,gin.H{"message":"Could not update event."}))
+		context.JSON(http.StatusInternalServerError,gin.H{"message":"Could not update event."})
 		return
 	}	
-	context.JSON(http.StatusOk,gin.H{"message":"Event updated successfully"})
+	context.JSON(http.StatusOK,gin.H{"message":"Event updated successfully"})
 }

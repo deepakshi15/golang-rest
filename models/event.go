@@ -79,7 +79,7 @@ func GetEventByID(id int64) (*Event,error){ //returns pointer to an event struct
 	return &event,nil //If the query successfully retrieves the event, the function returns a pointer to the event and nil for the error.
 }
 
-func (event Event) update() error{
+func (event Event) Update() error{
 	query:=`
 	UPDATE events
 	SET name=?, description=?,location=?,dateTime=?
